@@ -1,10 +1,10 @@
 const fs = require('fs').promises;
 
 const productManager = {
-  // Método para obtener todos los productos
+ 
   getAllProducts: async () => {
     try {
-      const data = await fs.readFile('products.json', 'utf-8');
+      const data = await fs.readFile("../products.json", 'utf-8');
       const products = JSON.parse(data);
       return products;
     } catch (error) {
@@ -12,10 +12,10 @@ const productManager = {
     }
   },
 
-  // Método para obtener un producto por su ID
+
   getProductById: async (productId) => {
     try {
-      const data = await fs.readFile('products.json', 'utf-8');
+      const data = await fs.readFile("../products.json", 'utf-8');
       const products = JSON.parse(data);
       const product = products.find((p) => p.id === productId);
 
@@ -29,13 +29,13 @@ const productManager = {
     }
   },
 
-  // Método para agregar un nuevo producto
+
   addProduct: async (newProduct) => {
     try {
-      const data = await fs.readFile('products.json', 'utf-8');
+      const data = await fs.readFile("../products.json", 'utf-8');
       const products = JSON.parse(data);
 
-      // Generamos un nuevo ID basado en el último ID existente
+
       const lastProductId = products.length > 0 ? products[products.length - 1].id : 0;
       const newProductId = lastProductId + 1;
       newProduct.id = newProductId;
@@ -50,10 +50,10 @@ const productManager = {
     }
   },
 
-  // Método para eliminar un producto por su ID
+
   deleteProductById: async (productId) => {
     try {
-      const data = await fs.readFile('products.json', 'utf-8');
+      const data = await fs.readFile("../products.json", 'utf-8');
       const products = JSON.parse(data);
       const updatedProducts = products.filter((p) => p.id !== productId);
 

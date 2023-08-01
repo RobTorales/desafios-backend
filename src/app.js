@@ -1,58 +1,68 @@
+import cartsRouter from '../routes/carts.router';
+import productsRouter from '../routes/products.router';
+
 const express = require('express');
-const productManager = require('./ProductManager');
+
+
 
 const app = express();
 const puerto = 8080;
 
+
 app.use(express.json());
 
-// Ruta para obtener todos los productos
-app.get('/api/products', async (req, res) => {
-  try {
-    const products = await productManager.getAllProducts();
-    res.json(products);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+const productsRouter = express.Router();
+app.use('/api/products', productsRouter);
+
+const cartsRouter = express.Router();
+app.use('/api/carts', cartsRouter);
+
+
+productsRouter.get('/', (req, res) => {
+
+  const limit = req.query.limit || null;
+  
 });
 
-// Ruta para obtener un producto por su ID
-app.get('/api/products/:id', async (req, res) => {
-  const productId = parseInt(req.params.id);
-
-  try {
-    const product = await productManager.getProductById(productId);
-    res.json(product);
-  } catch (error) {
-    res.status(404).json({ error: error.message });
-  }
+productsRouter.get('/:pid', (req, res) => {
+  const productId = req.params.pid;
+  
 });
 
-// Ruta para agregar un nuevo producto
-app.post('/api/products', async (req, res) => {
+productsRouter.post('/', (req, res) => {
   const newProduct = req.body;
-
-  try {
-    const product = await productManager.addProduct(newProduct);
-    res.status(201).json(product);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+  
 });
 
-// Ruta para eliminar un producto por su ID
-app.delete('/api/products/:id', async (req, res) => {
-  const productId = parseInt(req.params.id);
-
-  try {
-    const deletedProductId = await productManager.deleteProductById(productId);
-    res.json({ id: deletedProductId, message: 'Producto eliminado exitosamente.' });
-  } catch (error) {
-    res.status(404).json({ error: error.message });
-  }
+productsRouter.put('/:pid', (req, res) => {
+  const productId = req.params.pid;
+  const updatedProduct = req.body;
+  
 });
 
-// Iniciar el servidor
+productsRouter.delete('/:pid', (req, res) => {
+  const productId = req.params.pid;
+  
+});
+
+
+cartsRouter.post('/', (req, res) => {
+  const newCart = req.body;
+ 
+});
+
+cartsRouter.get('/:cid', (req, res) => {
+  const cartId = req.params.cid;
+ 
+});
+
+cartsRouter.post('/:cid/products/:pid', (req, res) => {
+  const cartId = req.params.cid;
+  const productId = req.params.pid;
+  const quantity = req.body.quantity || 1;
+  
+});
+
 app.listen(puerto, () => {
   console.log(`Servidor Express iniciado en :` +puerto);
 });
