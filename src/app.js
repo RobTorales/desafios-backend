@@ -1,16 +1,15 @@
+import cartsRouter from "./carts.router";
+import productRouter from "./products.router";
 import express from "express";
-import cartsRouter from "../routes/cartsRouter";
-import productsRouter from "../routes/productsRouter";
-
 
 const app = express();
-const puerto = 8080;
-
+const port = 8000;
 
 app.use(express.json());
-app.use("/api/products/", productsRouter);
+
+app.use("/api/products/", productRouter);
 app.use("/api/carts/", cartsRouter);
 
-app.listen(puerto, () => {
-  console.log(`Servidor Express iniciado en :` +puerto);
+app.listen(port, () => {
+  console.log("Servidor escuchando en puerto " + port);
 });
