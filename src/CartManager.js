@@ -1,81 +1,71 @@
-const fs = require('fs');
+import fs from "fs";
 
-const CART_FILE_PATH = './cart.json';
-
-
-function readCartsFromFile(callback) {
-  fs.readFile(CART_FILE_PATH, 'utf8', (err, data) => {
-    if (err) {
-      console.error('Error al leer el archivo del carrito:', err);
-      return callback(err);
+class CartManager {
+    constructor() {
+        this.carts = [];
+        this.path = "Carrito.json";
+        this.createFile();
     }
 
-    const carts = JSON.parse(data);
-    callback(null, carts);
-  });
+    createFile() {
+        if (!fs.existsSync(this.path)) {
+            fs.writeFileSync(this.path, JSON.stringify(this.carts));
+        }
+    }
+
+    newCart() {
+        this.carts.push({id:this.generateId(), products:[]});
+        this.saveCart();
+        console.log("Cart created!");
+
+        return true;
+    }
+
+    getCart(id) {
+        this.carts = JSON.parse(fs.readFileSync(this.path, "utf-8"));
+
+        return this.carts.find(item => item.id === id);
+    }
+
+    getCarts() {
+        let carts = JSON.parse(fs.readFileSync(this.path, "utf-8"));
+
+        return carts;
+    }
+
+    generateId() {
+        let max = 0;
+        let carts = this.getCarts();
+
+        carts.forEach(item => {
+            if (item.id > max) {
+                max = item.id;
+            }
+        });
+
+        return max+1;
+    }
+
+    saveCart() {
+        fs.writeFileSync(this.path, JSON.stringify(this.carts));
+    }
+
+    addProductToCart(cid, pid) {
+        this.carts = this.getCarts();
+        const cart = this.carts.find(item => item.id === cid);
+        let product = cart.products.find(item => item.product === pid);
+
+        if (product) {
+            product.quantity+= 1;
+        } else {
+            cart.products.push({product:pid, quantity:1});
+        }
+
+        this.saveCart();
+        console.log("Product added!");
+
+        return true;
+    }    
 }
 
-
-function writeCartsToFile(carts, callback) {
-  fs.writeFile(CART_FILE_PATH, JSON.stringify(carts, null, 2), (err) => {
-    if (err) {
-      console.error('Error al leer el archivo del carrito:', err);
-      return callback(err);
-    }
-
-    callback(null);
-  });
-}
-
-
-function getCartById(cartId, callback) {
-  readCartsFromFile((err, carts) => {
-    if (err) {
-      return callback(err);
-    }
-
-    const cart = carts.find((c) => c.id === cartId);
-
-    if (!cart) {
-      return callback(new Error('Carrito no encontrado'));
-    }
-
-    callback(null, cart);
-  });
-}
-
-
-function addProductToCart(cartId, productId, quantity, callback) {
-  readCartsFromFile((err, carts) => {
-    if (err) {
-      return callback(err);
-    }
-
-    const cart = carts.find((c) => c.id === cartId);
-
-    if (!cart) {
-      return callback(new Error('Carrito no encontrado'));
-    }
-
-    const existingProduct = cart.products.find((p) => p.product === productId);
-
-    if (existingProduct) {
-      existingProduct.quantity += quantity;
-    } else {
-      cart.products.push({ product: productId, quantity });
-    }
-
-    writeCartsToFile(carts, (err) => {
-      if (err) {
-        return callback(err);
-      }
-
-      callback(null, cart.products);
-    });
-  });
-}
-
-module.exports = {
-  getCartById,
-  addProductToCart,
-};
+export default CartManager;
