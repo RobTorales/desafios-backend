@@ -13,22 +13,22 @@ class CartManager {
         }
     }
 
-    newCart() {
-        this.carts.push({id:this.generateId(), products:[]});
-        this.saveCart();
+    async newCart() {
+        this.carts.push({ id: this.generateId(), products: [] });
+        await this.saveCart();
         console.log("Cart created!");
 
         return true;
     }
 
-    getCart(id) {
-        this.carts = JSON.parse(fs.readFileSync(this.path, "utf-8"));
+    async getCart(id) {
+        this.carts = JSON.parse(await fs.promises.readFile(this.path, "utf-8"));
 
         return this.carts.find(item => item.id === id);
     }
 
-    getCarts() {
-        let carts = JSON.parse(fs.readFileSync(this.path, "utf-8"));
+    async getCarts() {
+        let carts = JSON.parse(await fs.promises.readFile(this.path, "utf-8"));
 
         return carts;
     }
@@ -43,29 +43,29 @@ class CartManager {
             }
         });
 
-        return max+1;
+        return max + 1;
     }
 
-    saveCart() {
-        fs.writeFileSync(this.path, JSON.stringify(this.carts));
+    async saveCart() {
+        await fs.promises.writeFile(this.path, JSON.stringify(this.carts));
     }
 
-    addProductToCart(cid, pid) {
-        this.carts = this.getCarts();
+    async addProductToCart(cid, pid) {
+        this.carts = await this.getCarts();
         const cart = this.carts.find(item => item.id === cid);
         let product = cart.products.find(item => item.product === pid);
 
         if (product) {
-            product.quantity+= 1;
+            product.quantity += 1;
         } else {
-            cart.products.push({product:pid, quantity:1});
+            cart.products.push({ product: pid, quantity: 1 });
         }
 
-        this.saveCart();
+        await this.saveCart();
         console.log("Product added!");
 
         return true;
-    }    
+    }
 }
 
 export default CartManager;

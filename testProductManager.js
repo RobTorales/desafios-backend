@@ -1,4 +1,4 @@
-const productManager = require('./ProductManager');
+const productManager = require("./ProductManager");
 
 
 productManager.getAllProducts()

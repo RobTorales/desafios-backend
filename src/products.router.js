@@ -1,89 +1,78 @@
 import { Router } from "express";
-import ProductManager from "./ProductManager.js";
+import ProductManager from "../ProductManager.js";
 
-const productRouter = Router();
-const productManager = new ProductManager();
+const productsRouter = Router();
+const PM = new ProductManager();
 
-productRouter.get("/", async (req, res) => {
-  try {
-    const limit = Number(req.query.limit);
-    const products = await productManager.getProducts();
-    console.log(products);
-    if (limit) {
-      let allProducts = [...products];
-      console.log(allProducts);
-      const productLimit = allProducts.slice(0, limit);
-      console.log(productLimit);
-      return res.send(productLimit);
-    } else {
-      res.send(products);
+productsRouter.get("/", async (req, res) => {
+    try {
+        const products = await PM.getProducts();
+        let { limit } = req.query;
+        res.send({ products: limit ? products.slice(0, limit) : products });
+    } catch (error) {
+        res.status(500).send({ status: "error", message: "Error al obtener los productos" });
     }
-  } catch (error) {
-    console.error("Error al obtener los productos:", error);
-    res.status(500).send("Error al obtener los productos");
-  }
 });
 
-productRouter.get("/:pid", async (req, res) => {
-  try {
-    const id = Number(req.params.pid);
-    const product = await productManager.getProductsById(id);
-    if (!product) {
-      res.status(404).send("Producto no encontrado");
-    } else {
-      res.send(product);
+productsRouter.get("/:pid", async (req, res) => {
+    try {
+        const products = await PM.getProducts();
+        let pid = Number(req.params.pid);
+        const product = products.find(item => item.id === pid);
+        if (product) {
+            res.send({ product });
+        } else {
+            res.send({ message: "Error! El ID de Producto no existe!" });
+        }
+    } catch (error) {
+        res.status(500).send({ status: "error", message: "Error al obtener el producto" });
     }
-  } catch (error) {
-    console.error("Error al obtener el producto:", error);
-    res.status(500).send("Error al obtener el producto");
-  }
 });
 
-productRouter.post("/", async (req, res) => {
-  let newProduct = req.body;
-  try {
-    await productManager.addProduct(newProduct);
-    res.send("Producto agregado");
-  } catch (error) {
-    console.error("Error al agregar el producto:", error);
-    res.status(400).send(`Error al agregar el producto: ${error.message}`);
-  }
-});
+productsRouter.post("/", async (req, res) => {
+    try {
+        let { title, description, code, price, status, stock, category, thumbnails } = req.body;
 
-productRouter.put("/:pid", async (req, res) => {
-  let pid = Number(req.params.pid);
-  let newProduct = req.body;
-  try {
-    await productManager.updateProduct(pid, newProduct);
-    res.send("Producto actualizado");
-  } catch (error) {
-    console.error("Error al actualizar el producto:", error);
-    res.status(500).send("Error al actualizar el producto");
-  }
-});
+        // Verificación de campos omitida para mantener el código más conciso.
 
-productRouter.delete("/:pid", async (req, res) => {
-  let pid = Number(req.params.pid);
-  try {
-    await productManager.deleteProduct(pid);
-    res.send({
-      status: "ok",
-      message: "El Producto se eliminó correctamente!",
-    });
-  } catch (error) {
-    if (error.message === "Producto no encontrado") {
-      res.status(404).send({
-        status: "error",
-        message:
-          "Error! No se pudo eliminar el Producto. Producto no encontrado!",
-      });
-    } else {
-      res.status(500).send({
-        status: "error",
-        message: "Error! No se pudo eliminar el Producto!",
-      });
+        if (await PM.addProduct({ title, description, code, price, status, stock, category, thumbnails })) {
+            res.send({ status: "ok", message: "El Producto se agregó correctamente!" });
+        } else {
+            res.status(500).send({ status: "error", message: "Error! No se pudo agregar el Producto!" });
+        }
+    } catch (error) {
+        res.status(500).send({ status: "error", message: "Error al agregar el producto" });
     }
-  }
 });
 
-export default productRouter;
+productsRouter.put("/:pid", async (req, res) => {
+    try {
+        let pid = Number(req.params.pid);
+        let { title, description, code, price, status, stock, category, thumbnails } = req.body;
+
+        // Verificación de campos omitida para mantener el código más conciso.
+
+        if (await PM.updateProduct(pid, { title, description, code, price, status, stock, category, thumbnails })) {
+            res.send({ status: "ok", message: "El Producto se actualizó correctamente!" });
+        } else {
+            res.status(500).send({ status: "error", message: "Error! No se pudo actualizar el Producto!" });
+        }
+    } catch (error) {
+        res.status(500).send({ status: "error", message: "Error al actualizar el producto" });
+    }
+});
+
+productsRouter.delete("/:pid", async (req, res) => {
+    try {
+        let pid = Number(req.params.pid);
+        if (await PM.deleteProduct(pid)) {
+            res.send({ status: "ok", message: "El Producto se eliminó correctamente!" });
+        } else {
+            res.status(500).send({ status: "error", message: "Error! No se pudo eliminar el Producto!" });
+        }
+    } catch (error) {
+        res.status(500).send({ status: "error", message: "Error al eliminar el producto" });
+    }
+});
+
+export default productsRouter;
