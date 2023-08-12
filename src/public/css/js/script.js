@@ -1,1 +1,0 @@
-console.log("Hola! Estoy desde el archivo script.js!");

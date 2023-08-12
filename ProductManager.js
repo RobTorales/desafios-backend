@@ -45,19 +45,13 @@ class ProductManager {
         return false;
     }
 
-    async deleteProduct(productId) {
-        this.products = await this.getProducts();
-        const productIndex = this.products.findIndex(item => item.id === productId);
+    async deleteProduct(productId){
+        const allproducts=await this.getProducts({})
+        const productswithoutfound=allproducts.filter(elemento=>elemento.id!==parseInt(productId))
+        await fs.promises.writeFile(this.path,JSON.stringify(productswithoutfound,null,2))
+      }
 
-        if (productIndex !== -1) {
-            this.products.splice(productIndex, 1);
-            await this.saveProducts();
-            console.log("Product deleted!");
-            return true;
-        }
-
-        return false;
-    }
+    
 
     generateId() {
         let max = 0;

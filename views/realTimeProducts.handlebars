@@ -1,39 +1,19 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Agregar producto!</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
-  </head>
-  <body>
-    <div class="container my-5">
-        <div class="row">
-            <div class="col-md-6 offset-md-3">
-                <h1>Agregar Nueva Usuario!</h1>
-                <form method="post" action="/api/users" enctype="multipart/form-data">
-                    <div class="mb-3">
-                      <label for="nombre" class="form-label">Nombre</label>
-                      <input type="text" class="form-control" id="nombre" name="nombre">
-                    </div>
-                    <div class="mb-3">
-                        <label for="nombre" class="form-label">Apellido</label>
-                        <input type="text" class="form-control" id="apellido" name="apellido">
-                    </div>
-                    <div class="mb-3">
-                        <label for="nombre" class="form-label">Edad</label>
-                        <input type="text" class="form-control" id="edad" name="edad">
-                    </div>
-                    <div class="mb-3">
-                        <label for="nombre" class="form-label">Imagen</label>
-                        <input type="file" class="form-control" id="imagen" name="imagen">
-                    </div>
-                    <button type="submit" class="btn btn-primary">Enviar</button>
-                </form>
-            </div>
-        </div>
-    </div>
-    
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
-  </body>
-</html>
+<form id="formProduct">
+    <h2>Realtime Products</h2>
+        <input class="contols" type="text" name="title" id="title" placeholder="Nombre del producto" required>
+        <input class="contols" type="text" name="description" id="description" placeholder="Descripcion del producto" required>
+        <input class="contols" type="number" name="stock" id="stock" placeholder="Stock disponible" required>
+        <input class="contols" type="text" name="thumbnail" id="thumbnail" placeholder="Imagen del producto" required>
+        <input class="contols" type="text" name="category" id="category" placeholder="Categoria" required>
+        <input class="contols" type="number" name="price" id="price" placeholder="Precio" required>
+        <input class="contols" type="text" name="code" id="code" placeholder="Codigo" required>
+        <button class="botons" type="submit" id="producto-registrar">Registrar nuevo Producto</button>
+    <h2>Para eliminar el producto:</h2>
+        <input class="contol" type="number" name="producto-id" id="producto-id" placeholder="Ingrese el ID del producto">
+    <button class="botons" type="button" id="boton-eliminar">Eliminar</button>
+</form>
+
+<div id="listproducts"></div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/index.js"></script>

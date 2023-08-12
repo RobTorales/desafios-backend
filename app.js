@@ -1,29 +1,53 @@
-import cartsRouter from "./src/carts.router.js";
-import productRouter from "./src/products.router.js";
-import handlebars from "express-handlebars";
-import __dirname from "./utils.js";
 import express from "express";
+import viewRouter from "./src/view.router.js";
+import cartRouter from "./src/carts.router.js";
+import productsRouter from "./src/products.router.js";
+import { __dirname } from "./utils.js";
+import handlebars from "express-handlebars";
+import { Server, Socket } from "socket.io";
 
 const app = express();
-const puerto = 8080;
+const puerto =8080;
+
+
+app.use(express.json());
+app.use(express.urlencoded({extended:true}));
+app.use(express.static(__dirname+"/public"))
 
 app.engine("handlebars", handlebars.engine());
-app.set("views", __dirname +"/views");
 app.set("view engine","handlebars");
-app.use(express.static(__dirname + "/public"));
-app.use(express.json());
-app.use("/api/products/", productRouter);
-app.use("/api/carts/", cartsRouter);
+app.set("views", __dirname+"/views")
 
-app.get("/", (req, res) => {
-  const product = {
-    title:"Hamburguesa Onion melt",
-    price:2320
-  }
+app.use("/api", cartRouter);
+app.use("/api", productsRouter);
+app.use("/", viewRouter);
 
-  res.render("index", product);
-})
 
-app.listen(puerto, () => {
-  console.log("Servidor escuchando en puerto " + puerto);
+const httpServer=app.listen(puerto, () => {
+    console.log("Servidor Activo en el puerto: " + puerto);
+});
+
+const socketServer = new Server(httpServer);
+
+import ProductManager from "./ProductManager.js";
+const PM = new ProductManager(__dirname+"./products.json");
+
+
+socketServer.on("connection", async (socket)=>{
+    console.log("Cliente conectado con ID: ", socket.id);
+    const listadeproductos = await PM.getProducts({});
+    socketServer.emit("envioDeProductos", listadeproductos);
+
+    socket.on("addProduct", async(obj)=>{
+        await PM.addProduct(obj);
+        const listadeproductos = await PM.getProducts({});
+        socketServer.emit("envioDeProductos", listadeproductos);    
+    });
+    
+    socket.on("deleteProduct",async(id)=>{
+        console.log(id)
+        await PM.deleteProduct(id)
+        const listadeproductos=await PM.getProducts({})
+        socketServer.emit("envioDeProducts",listadeproductos)
+        })
 });
