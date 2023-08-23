@@ -1,19 +1,19 @@
-<form id="formProduct">
-    <h2>Realtime Products</h2>
-        <input class="contols" type="text" name="title" id="title" placeholder="Nombre del producto" required>
-        <input class="contols" type="text" name="description" id="description" placeholder="Descripcion del producto" required>
-        <input class="contols" type="number" name="stock" id="stock" placeholder="Stock disponible" required>
-        <input class="contols" type="text" name="thumbnail" id="thumbnail" placeholder="Imagen del producto" required>
-        <input class="contols" type="text" name="category" id="category" placeholder="Categoria" required>
-        <input class="contols" type="number" name="price" id="price" placeholder="Precio" required>
-        <input class="contols" type="text" name="code" id="code" placeholder="Codigo" required>
-        <button class="botons" type="submit" id="producto-registrar">Registrar nuevo Producto</button>
-    <h2>Para eliminar el producto:</h2>
-        <input class="contol" type="number" name="producto-id" id="producto-id" placeholder="Ingrese el ID del producto">
-    <button class="botons" type="button" id="boton-eliminar">Eliminar</button>
+<form class="formProduct">
+    <h3>Realtime Products</h3>
+        <input class="form-control" id="floatingInput" type="text" name="title" id="title" placeholder="Ingrese nombre"required>
+        <input class="form-control" type="text" name="description" id="description" placeholder="Descripcion del producto" required>
+        <input class="form-control" type="number" name="stock" id="stock" placeholder="Stock disponible" required>
+        <input class="form-control" type="text" name="thumbnail" id="thumbnail" placeholder="Imagen del producto" required>
+        <input class="form-control" type="text" name="category" id="category" placeholder="Categoria" required>
+        <input class="form-control" type="number" name="price" id="price" placeholder="Precio" required>
+        <input class="form-control" type="text" name="code" id="code" placeholder="Codigo" required>
+        <button class="btn btn-danger" type="submit" id="producto-registrar">Registrar nuevo Producto</button>
+    <h3>Para eliminar el producto:</h3>
+        <input class="form-control" type="number" name="producto-id" id="producto-id" placeholder="Ingrese el ID del producto">
+    <button class="btn btn-danger" type="button" id="boton-eliminar">Eliminar</button>
 </form>
 
-<div id="listproducts"></div>
+<div id="listProducts"></div>
 
 <script src="/socket.io/socket.io.js"></script>
-<script src="/js/index.js"></script>
+<script src="../src/public/js/index.js"></script>

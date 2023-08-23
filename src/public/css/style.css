@@ -11,7 +11,7 @@
     align-items: center;
   }
   
-  #listproducts{
+  #listProducts{
     position: relative;
     display: flex;
     flex-wrap: wrap;
@@ -63,7 +63,7 @@
     max-height: 250px;
 }
 
-.producto-agregar{
+.producto-comprar{
     display: flex;
     justify-content: center;
     text-align: center;
@@ -80,65 +80,26 @@
     text-decoration:none;
 }
   
-  #formProduct {
-    width: 400px;
-    background: white;
-    padding: 30px;
-    margin: auto;
-    margin-top: 100px;
-    margin-bottom:60px;
-    border-radius: 4px;
-    font-family: 'calibri';
-    color: white;
-    box-shadow: 7px 13px 37px #000;
+  .formProduct {
+    width: 500px;
+    display: flex;
+    flex-direction: column;
   }
-  
-  #formProducth4 {
-    font-size: 22px;
-    margin-bottom: 20px;
-  }
-  
-  .controls {
+
+  .form-control{
     width: 100%;
-    background: red;
-    padding: 10px;
-    border-radius: 4px;
-    margin-bottom: 16px;
-    border: 1px solid red;
-    font-family: 'calibri';
-    font-size: 18px;
-    color: white;
   }
+
+  .d-flex{
+    gap: 10px;
+}
+
+.btn{
+    cursor: pointer;
+    padding: 5px;
+    height: 5%;
+    width: 200px;
+}
+
+
   
-  #formProduct p {
-    height: 40px;
-    text-align: center;
-    font-size: 18px;
-    line-height: 40px;
-  }
-  #formProduct h2 {
-    height: 40px;
-    text-align: center;
-    font-size: 18px;
-    line-height: 40px;
-  }
-  
-  #formProduct a {
-    color: white;
-    text-decoration: none;
-  }
-  
-  #formProduct a:hover {
-    color: white;
-    text-decoration: underline;
-  }
-  
-  #formProduct .botons {
-    width: 100%;
-    background: red;
-    border: none;
-    padding: 12px;
-    color: white;
-    margin: 16px 0;
-    font-size: 16px;
-  }

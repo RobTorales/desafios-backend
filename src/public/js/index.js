@@ -6,7 +6,7 @@ socketClient.on("envioDeProductos", (obj)=>{
 });
 
 function updateProductList(products){
-    let div = document.getElementById("listproducts");
+    let div = document.getElementById("list-products");
     let productos = " ";
 
     products.forEach((product) => {
@@ -29,7 +29,7 @@ function updateProductList(products){
 }
 
 
-let form =document.getElementById("formProduct");
+let form =document.getElementById("form-Product");
 form.addEventListener("submit", (evt)=>{
     evt.preventDefault();
 

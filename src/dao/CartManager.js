@@ -3,7 +3,7 @@ import fs from "fs";
 class CartManager {
     constructor() {
         this.carts = [];
-        this.path = "Carrito.json";
+        this.path = "Carts.json";
         this.createFile();
     }
 
@@ -15,7 +15,7 @@ class CartManager {
 
     async newCart() {
         this.carts.push({ id: this.generateId(), products: [] });
-        await this.saveCart();
+        await this.saveCarts();
         console.log("Cart created!");
 
         return true;
@@ -28,16 +28,14 @@ class CartManager {
     }
 
     async getCarts() {
-        let carts = JSON.parse(await fs.promises.readFile(this.path, "utf-8"));
+        const carts = JSON.parse(await fs.promises.readFile(this.path, "utf-8"));
 
         return carts;
     }
 
     generateId() {
         let max = 0;
-        let carts = this.getCarts();
-
-        carts.forEach(item => {
+        this.carts.forEach(item => {
             if (item.id > max) {
                 max = item.id;
             }
@@ -46,7 +44,7 @@ class CartManager {
         return max + 1;
     }
 
-    async saveCart() {
+    async saveCarts() {
         await fs.promises.writeFile(this.path, JSON.stringify(this.carts));
     }
 
@@ -61,10 +59,24 @@ class CartManager {
             cart.products.push({ product: pid, quantity: 1 });
         }
 
-        await this.saveCart();
+        await this.saveCarts();
         console.log("Product added!");
 
         return true;
+    }
+
+    async deleteCart(cid) {
+        this.carts = await this.getCarts();
+        const cartIndex = this.carts.findIndex(item => item.id === cid);
+
+        if (cartIndex !== -1) {
+            this.carts.splice(cartIndex, 1);
+            await this.saveCarts();
+            console.log("Cart deleted!");
+            return true;
+        }
+
+        return false;
     }
 }
 

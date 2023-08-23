@@ -1,60 +1,40 @@
 import { Router } from "express";
-import CartManager from "../CartManager.js";
+import CartManager from "./dao/CartManager.js";
 
 const cartsRouter = Router();
 const CM = new CartManager();
 
 cartsRouter.post("/", async (req, res) => {
-  try {
-    await CM.newCart();
-    res.send("Carrito agregado");
-  } catch (error) {
-    console.error("Error al agregar el carrito:", error);
-    res.status(500).send("Error al agregar el carrito");
-  }
+    const newCart = await CM.newCart();
+
+    if (newCart) {
+        res.send({status:"ok", message:"El Carrito se creó correctamente!"});
+    } else {
+        res.status(500).send({status:"error", message:"Error! No se pudo crear el Carrito!"});
+    }
 });
 
 cartsRouter.get("/:cid", async (req, res) => {
-  try {
-    const id = Number(req.params.cid);
-    const cart = await CM.getCart(id);
-    if (!cart) {
-      res.status(404).send("Carrito no encontrado");
+    const cid = req.params.cid;
+    const cart = await CM.getCart(cid);
+
+    if (cart) {
+        res.send({products:cart.products});
     } else {
-      res.send(cart);
+        res.status(400).send({status:"error", message:"Error! No se encuentra el ID de Carrito!"});
     }
-  } catch (error) {
-    console.error("Error al obtener el carrito:", error);
-    res.status(500).send("Error al obtener el carrito");
-  }
 });
 
 cartsRouter.post("/:cid/products/:pid", async (req, res) => {
-    const cid = Number(req.params.cid);
-    const pid = Number(req.params.pid); 
-    const cart = await CM.getCart(cid);
-    if (cart) {
-      if (await CM.addProductToCart(cid, pid)) { 
-        res.send({
-          status: "ok",
-          message: "El producto se agregó correctamente!",
-        });
-      } else {
-        res
-          .status(400)
-          .send({
-            status: "error",
-            message: "Error! No se pudo agregar el Producto al Carrito!",
-          });
-      }
+    const cid = req.params.cid;
+    const pid = req.params.pid;
+    const result = await CM.addProductToCart(cid, pid);
+
+    if (result) {
+        res.send({status:"ok", message:"El producto se agregó correctamente!"});
     } else {
-      res
-        .status(400)
-        .send({
-          status: "error",
-          message: "Error! No se encuentra el ID de Carrito!",
-        });
+        res.status(400).send({status:"error", message:"Error! No se pudo agregar el Producto al Carrito!"});
     }
-  });
+});
 
 export default cartsRouter;

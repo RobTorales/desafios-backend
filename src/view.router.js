@@ -1,21 +1,22 @@
-import { Router } from "express";
-import ProductManager from "../ProductManager.js";
-import { __dirname } from "../utils.js";
+import express from "express";
+import ProductManager from "./dao/ProductManager.js";
 
-const pmanager = new ProductManager( __dirname + "../products.json");
-const router = Router();
+const router = express.Router();
+const PM = new ProductManager();
 
-
-router.get("/", async(req,res)=>{
-    const listaProductos = await pmanager.getProducts({});
-    console.log(listaProductos);
-    res.render("home", {listaProductos});
+router.get("/", async (req, res) => {
+    const products = await PM.getProducts();
+    res.render("home", {products});
 });
 
-
-router.get("/realtimeProducts", (req,res)=>{
-    res.render("realtimeProducts");
+router.get("/realtimeproducts", (req, res) => {
+    res.render("realTimeProducts");
 });
+
+router.get("/chat", (req, res) => {
+    res.render("chat");
+});
+
 
 export default router;
 
