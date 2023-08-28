@@ -1,39 +1,35 @@
 import express from "express";
-import viewRouter from "./src/view.router.js";
-import cartRouter from "./src/carts.router.js";
-import productsRouter from "./src/products.router.js";
-import ChatManager from "./src/dao/ChatManager.js";
-import { __dirname } from "./utils.js";
+import __dirname from "./utils.js";
 import handlebars from "express-handlebars";
-import { Server, Socket } from "socket.io";
+import viewRouter from "./src/view.router.js";
+import {Server} from "socket.io";
+import ProductManager from "./src/dao/ProductManager.js";
+import ChatManager from "./src/dao/ChatManager.js";
 import mongoose from "mongoose";
+import productsRouter from "./src/products.router.js";
+import cartsRouter from "./src/carts.router.js";
 
 const app = express();
-const puerto =8080;
-
-mongoose.connect ("mongodb+srv://roberto1608torales:16AGOST004@cluster0.ggriuqe.mongodb.net/?retryWrites=true&w=majority");
-
-app.use(express.json());
-app.use(express.urlencoded({extended:true}));
-app.use(express.static(__dirname+"/public"))
-
-app.engine("handlebars", handlebars.engine());
-app.set("view engine","handlebars");
-app.set("views", __dirname+"/views")
-app.use("/api/products/", productsRouter);
-app.use("/api/carts/", cartRouter);
-app.use("/", viewRouter);
-
-
-
-const httpServer=app.listen(puerto, () => {
+const puerto = 8080;
+const httpServer = app.listen(puerto, () => {
     console.log("Servidor Activo en el puerto: " + puerto);
 });
 
 const socketServer = new Server(httpServer);
+const PM = new ProductManager();
+const CM = new ChatManager();
 
-import ProductManager from "./src/dao/ProductManager.js";
-const PM = new ProductManager(__dirname+"./products.json");
+app.engine("handlebars", handlebars.engine());
+app.set("views", __dirname + "/views");
+app.set("view engine", "handlebars");
+app.use(express.static(__dirname + "/public"));
+app.use(express.json());
+app.use(express.urlencoded({extended:true}));
+app.use("/api/products/", productsRouter);
+app.use("/api/carts/", cartsRouter);
+app.use("/", viewRouter);
+
+mongoose.connect("mongodb+srv://roberto1608torales:16AGOST004@cluster0.ggriuqe.mongodb.net/?retryWrites=true&w=majority");
 
 socketServer.on("connection", (socket) => {
     console.log("Nueva Conexión!");
