@@ -1,16 +1,20 @@
-{{#each listaProductos}}
-<h1>burger factory</h1>
-<div class="contenedor-productos">
-    <div class="producto">
-        <img class="producto-imagen" src={{this.thumbnail}} />
-        <div class="producto-detalles">
-            <h2>{{this.title}}</h2>
-            <div>{{this.description}}</div>
-            <div>${{this.price}}</div>
-            <div class="producto-comprar">
-                <a class="comprar"href="#">Comprar ahora</a>
+<div class="container">
+    <div class="row">
+        {{#each listaProductos}}
+            <h1>burger factory</h1>
+            <div class="contenedor-productos">
+                <div class="producto">
+                    <img class="producto-imagen" src={{this.thumbnail}} />
+                    <div class="producto-detalles">
+                        <h2>{{this.title}}</h2>
+                        <div>{{this.description}}</div>
+                        <div>${{this.price}}</div>
+                        <div class="producto-comprar">
+                            <a class="comprar"href="#">Comprar ahora</a>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
+        {{/each}}
     </div>
 </div>
-{{/each}}

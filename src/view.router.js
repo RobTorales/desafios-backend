@@ -6,6 +6,7 @@ const PM = new ProductManager();
 
 router.get("/", async (req, res) => {
     const products = await PM.getProducts();
+    console.log(products)
     res.render("home", {products});
 });
 

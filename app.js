@@ -19,6 +19,8 @@ const socketServer = new Server(httpServer);
 const PM = new ProductManager();
 const CM = new ChatManager();
 
+mongoose.connect("mongodb+srv://roberto1608torales:roberto1608@cluster0.ggriuqe.mongodb.net/ecommerce?retryWrites=true&w=majority");
+
 app.engine("handlebars", handlebars.engine());
 app.set("views", __dirname + "/views");
 app.set("view engine", "handlebars");
@@ -29,7 +31,7 @@ app.use("/api/products/", productsRouter);
 app.use("/api/carts/", cartsRouter);
 app.use("/", viewRouter);
 
-mongoose.connect("mongodb+srv://roberto1608torales:16AGOST004@cluster0.ggriuqe.mongodb.net/?retryWrites=true&w=majority");
+
 
 socketServer.on("connection", (socket) => {
     console.log("Nueva Conexión!");
