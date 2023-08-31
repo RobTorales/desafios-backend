@@ -5,112 +5,131 @@ const productsRouter = Router();
 const PM = new ProductManager();
 
 productsRouter.get("/", async (req, res) => {
-    const products = await PM.getProducts();
-    let { limit } = req.query;
+    const products = await PM.getProducts(re.query);
 
-    res.send({ products: limit ? products.slice(0, limit) : products });
+    res.send({products});
 });
 
 productsRouter.get("/:pid", async (req, res) => {
-    const products = await PM.getProducts();
-    let pid = Number(req.params.pid);
-
-    res.send({
-        product:
-            products.find((item) => item.id === pid) ||
-            "Error! El ID de Producto no existe!",
-    });
+    let pid = req.params.pid;
+    const products = await PM.getProductById(pid);
+    
+    res.send({products});
 });
 
 productsRouter.post("/", async (req, res) => {
-    let {
-        title,
-        description,
-        code,
-        price,
-        stock,
-        thumbnails,
-    } = req.body;
+    let {title, description, code, price, status, stock, category, thumbnails} = req.body;
 
     if (!title) {
-        res
-            .status(400)
-            .send({ status: "error", message: "Error! No se cargó el campo Title!" });
-        return;
+        res.status(400).send({status:"error", message:"Error! No se cargó el campo Title!"});
+        return false;
     }
 
-    
+    if (!description) {
+        res.status(400).send({status:"error", message:"Error! No se cargó el campo Description!"});
+        return false;
+    }
+
+    if (!code) {
+        res.status(400).send({status:"error", message:"Error! No se cargó el campo Code!"});
+        return false;
+    }
+
+    if (!price) {
+        res.status(400).send({status:"error", message:"Error! No se cargó el campo Price!"});
+        return false;
+    }
 
     status = !status && true;
 
     if (!stock) {
-        res
-            .status(400)
-            .send({ status: "error", message: "Error! No se cargó el campo Stock!" });
-        return;
+        res.status(400).send({status:"error", message:"Error! No se cargó el campo Stock!"});
+        return false;
     }
 
-   
+    if (!category) {
+        res.status(400).send({status:"error", message:"Error! No se cargó el campo Category!"});
+        return false;
+    }
 
-    try {
-        if (await PM.addProduct({ title, description, code, price, status, stock, thumbnails })) {
-            res.send({ status: "ok", message: "El Producto se agregó correctamente!" });
-        } else {
-            res.status(500).send({ status: "error", message: "Error! No se pudo agregar el Producto!" });
-        }
-    } catch (error) {
-        res.status(500).send({ status: "error", message: "Error! No se pudo agregar el Producto!" });
+    if (!thumbnails) {
+        res.status(400).send({status:"error", message:"Error! No se cargó el campo Thumbnails!"});
+        return false;
+    } else if ((!Array.isArray(thumbnails)) || (thumbnails.length == 0)) {
+        res.status(400).send({status:"error", message:"Error! Debe ingresar al menos una imagen en el Array Thumbnails!"});
+        return false;
+    }
+
+    const result = await PM.addProduct({title, description, code, price, status, stock, category, thumbnails}); 
+
+    if (result) {
+        res.send({status:"ok", message:"El Producto se agregó correctamente!"});
+    } else {
+        res.status(500).send({status:"error", message:"Error! No se pudo agregar el Producto!"});
     }
 });
 
 productsRouter.put("/:pid", async (req, res) => {
-    let pid = Number(req.params.pid);
-    let {
-        title,
-        description,
-        code,
-        price,
-        status,
-        stock,
-        category,
-        thumbnails,
-    } = req.body;
+    let pid = req.params.pid;
+    let {title, description, code, price, status, stock, category, thumbnails} = req.body;
 
-    
+    if (!title) {
+        res.status(400).send({status:"error", message:"Error! No se cargó el campo Title!"});
+        return false;
+    }
+
+    if (!description) {
+        res.status(400).send({status:"error", message:"Error! No se cargó el campo Description!"});
+        return false;
+    }
+
+    if (!code) {
+        res.status(400).send({status:"error", message:"Error! No se cargó el campo Code!"});
+        return false;
+    }
+
+    if (!price) {
+        res.status(400).send({status:"error", message:"Error! No se cargó el campo Price!"});
+        return false;
+    }
 
     status = !status && true;
 
     if (!stock) {
-        res
-            .status(400)
-            .send({ status: "error", message: "Error! No se cargó el campo Stock!" });
-        return;
+        res.status(400).send({status:"error", message:"Error! No se cargó el campo Stock!"});
+        return false;
     }
 
-   
+    if (!category) {
+        res.status(400).send({status:"error", message:"Error! No se cargó el campo Category!"});
+        return false;
+    }
 
-    try {
-        if (await PM.updateProduct(pid, { title, description, code, price, status, stock, category, thumbnails })) {
-            res.send({ status: "ok", message: "El Producto se actualizó correctamente!" });
-        } else {
-            res.status(500).send({ status: "error", message: "Error! No se pudo actualizar el Producto!" });
-        }
-    } catch (error) {
-        res.status(500).send({ status: "error", message: "Error! No se pudo actualizar el Producto!" });
+    if (!thumbnails) {
+        res.status(400).send({status:"error", message:"Error! No se cargó el campo Thumbnails!"});
+        return false;
+    } else if ((!Array.isArray(thumbnails)) || (thumbnails.length == 0)) {
+        res.status(400).send({status:"error", message:"Error! Debe ingresar al menos una imagen en el Array Thumbnails!"});
+        return false;
+    }
+
+    const result = await PM.updateProduct(pid, {title, description, code, price, status, stock, category, thumbnails});
+
+    if (result) {
+        res.send({status:"ok", message:"El Producto se actualizó correctamente!"});
+    } else {
+        res.status(500).send({status:"error", message:"Error! No se pudo actualizar el Producto!"});
     }
 });
 
 productsRouter.delete("/:pid", async (req, res) => {
-    let pid = Number(req.params.pid);
+    let pid = req.params.pid;
+    const result = await PM.deleteProduct(pid)
 
-    try {
-        if (await PM.deleteProduct(pid)) {
-            res.send({ status: "ok", message: "El Producto se eliminó correctamente!" });
-        } else {
-            res.status(500).send({ status: "error", message: "Error! No se pudo eliminar el Producto!" });
-        }
-    } catch (error) {
-        res.status(500).send({ status: "error", message: "Error! No se pudo eliminar el Producto!" });
+    if (result) {
+        res.send({status:"ok", message:"El Producto se eliminó correctamente!"});
+    } else {
+        res.status(500).send({status:"error", message:"Error! No se pudo eliminar el Producto!"});
     }
 });
 
