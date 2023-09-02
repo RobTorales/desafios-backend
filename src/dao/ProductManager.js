@@ -56,7 +56,7 @@ class ProductManager {
         }
     }
 
-    async getProducts(params) {
+    async getProducts(params = {}) {
         let {limit, page, query, sort} = params
         limit = limit ? limit : 10;
         page = page ? page : 1;
