@@ -2,14 +2,14 @@ import express from "express";
 import __dirname from "./utils.js";
 import expressHandlebars from "express-handlebars";
 import Handlebars from "handlebars";
-import viewRouter from "./view.router.js";
+import viewRouter from "./routes/view.router.js";
 import { allowInsecurePrototypeAccess } from '@handlebars/allow-prototype-access'
 import {Server} from "socket.io";
 import ProductManager from "./dao/ProductManager.js";
 import ChatManager from "./dao/ChatManager.js";
 import mongoose from "mongoose";
-import productsRouter from "./products.router.js";
-import cartsRouter from "./carts.router.js";
+import productsRouter from "./routes/products.router.js";
+import cartsRouter from "./routes/carts.router.js";
 
 const app = express();
 const puerto = 8080;

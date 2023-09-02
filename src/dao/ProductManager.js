@@ -57,20 +57,55 @@ class ProductManager {
     }
 
     async getProducts(params = {}) {
-        let {limit, page, query, sort} = params
-        limit = limit ? limit : 10;
-        page = page ? page : 1;
-        query = query || {};
-        sort = sort ? (sort == "asc" ? 1 : -1) : 0;
-        let products = await productModel.paginate(query, {limit:limit, page:page, sort:{price:sort}});
-        let status = products ? "success" : "error";
-
-        let prevLink = products.hasPrevPage ? "http://localhost:8080/products?limit=" + limit + "&page=" + products.prevPage : null;
-        let nextLink = products.hasNextPage ? "http://localhost:8080/products?limit=" + limit + "&page=" + products.nextPage : null;
-        
-        products = {status:status, payload:products.docs, totalPages:products.totalPages, prevPage:products.prevPage, nextPage:products.nextPage, page:products.page, hasPrevPage:products.hasPrevPage, hasNextPage:products.hasNextPage, prevLink:prevLink, nextLink:nextLink};
-
-        return products;
+        try {
+            let { limit = 10, page = 1, query = {}, sort = 0 } = params;
+    
+            
+            if (sort !== 1 && sort !== -1) {
+                sort = 0; 
+            }
+    
+            const products = await productModel.paginate(query, {
+                limit: limit,
+                page: page,
+                sort: { price: sort }
+            });
+    
+           
+            if (!products) {
+                throw new Error("No se pudieron obtener productos");
+            }
+    
+            
+            const prevLink = products.hasPrevPage
+                ? this.generatePaginationLink(limit, products.prevPage)
+                : null;
+            const nextLink = products.hasNextPage
+                ? this.generatePaginationLink(limit, products.nextPage)
+                : null;
+    
+            const result = {
+                status: "success",
+                payload: products.docs,
+                totalPages: products.totalPages,
+                prevPage: products.prevPage,
+                nextPage: products.nextPage,
+                page: products.page,
+                hasPrevPage: products.hasPrevPage,
+                hasNextPage: products.hasNextPage,
+                prevLink: prevLink,
+                nextLink: nextLink
+            };
+    
+            return result;
+        } catch (error) {
+           
+            throw error;
+        }
+    }
+    
+    generatePaginationLink(limit, page) {
+        return `http://localhost:8080/products?limit=${limit}&page=${page}`;
     }
 
     async getProductById(id) {

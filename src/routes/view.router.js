@@ -1,13 +1,13 @@
 import express from "express";
-import ProductManager from "./dao/ProductManager.js";
+import ProductManager from "../dao/ProductManager.js";
+import __dirname from "../utils.js";
 
 const router = express.Router();
 const PM = new ProductManager();
 
 router.get("/", async (req, res) => {
-    const products = await PM.getProducts();
-    console.log(products)
-    res.render("home", {products});
+    const products = await PM.getProducts(req.query);
+    res.render(__dirname + "/viwes/home", {products});
 });
 
 router.get("/products", async (req, res) => {
